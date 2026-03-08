@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--
+    Updated March 8th, 2026.
+    Updated March 1st, 2019.
+    Updated March 4th, 2018.
+    Updated October 6th, 2014.
+    Updated May, 2014.
+    Updated December 2010.
+    Designed by Ryan Rampersad, August 2010.
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ifupdown</title>
+<meta name="description" content="ifupdown — curiosity pointed in every direction. A project by Ryan Rampersad.">
+<meta name="keywords" content="ryan rampersad, ifupdown, javascript, thoughts, opinions, ideas">
+<meta name="author" content="Ryan Rampersad">
+<meta property="og:title" content="ifupdown">
+<meta property="og:description" content="Curiosity pointed in every direction.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ifupdown.com">
+<meta name="theme-color" content="#e07030">
+<style>
+    *,
+    *::before,
+    *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    :root {
+        --orange: #e07030;
+        --orange-light: #f0904a;
+        --orange-hover: #c85a1a;
+        --orange-glow: rgba(224, 112, 48, 0.12);
+        --text: #2a2a2a;
+        --text-secondary: #6b6b6b;
+        --text-tertiary: #999;
+        --bg: #fafaf9;
+        --bg-card: #fff;
+        --border-top: #e07030;
+        --divider: #e8e4df;
+        --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --orange: #f0904a;
+            --orange-light: #ffaa6e;
+            --orange-hover: #ffb87a;
+            --orange-glow: rgba(240, 144, 74, 0.1);
+            --text: #e8e4e0;
+            --text-secondary: #a8a4a0;
+            --text-tertiary: #706c68;
+            --bg: #161514;
+            --bg-card: #1e1d1c;
+            --border-top: #f0904a;
+            --divider: #2e2c2a;
+            --shadow: 0 1px 3px rgba(0,0,0,0.2), 0 4px 12px rgba(0,0,0,0.15);
+        }
+    }
+
+    html {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+        color: var(--text);
+        background: var(--bg);
+    }
+
+    body {
+        border-top: 4px solid var(--border-top);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1.25rem;
+    }
+
+    main {
+        text-align: center;
+        max-width: 520px;
+        width: 100%;
+    }
+
+    .logo-container {
+        position: relative;
+        width: 240px;
+        height: 240px;
+        margin: 0 auto;
+    }
+
+    .logo-container canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .logo {
+        position: relative;
+        z-index: 1;
+        width: 96px;
+        height: 96px;
+        display: block;
+        margin: 0 auto;
+        top: 50%;
+        transform: translateY(-50%);
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        filter: drop-shadow(0 2px 8px rgba(224, 112, 48, 0.2));
+    }
+
+    .logo-container:hover .logo {
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    h1 {
+        font-size: 2.25rem;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        margin-bottom: 1rem;
+    }
+
+    .tagline {
+        font-size: 1.15rem;
+        line-height: 1.55;
+        color: var(--text);
+        margin-bottom: 0.75rem;
+        font-weight: 500;
+    }
+
+    .tagline-sub {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+    }
+
+    .divider {
+        width: 40px;
+        height: 2px;
+        background: var(--divider);
+        margin: 0 auto 1.75rem;
+        border-radius: 1px;
+    }
+
+    .links {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+    }
+
+    a {
+        color: var(--orange);
+        text-decoration: none;
+        transition: color 0.2s ease;
+        border-bottom: 1px solid transparent;
+    }
+
+    a:hover {
+        color: var(--orange-hover);
+        border-bottom-color: var(--orange-hover);
+    }
+
+    .links a {
+        padding-bottom: 1px;
+    }
+
+    .sep {
+        margin: 0 0.35em;
+        color: var(--text-tertiary);
+    }
+
+    footer {
+        margin-top: 3.5rem;
+        font-size: 0.8rem;
+        color: var(--text-tertiary);
+        letter-spacing: 0.01em;
+    }
+
+    @media (max-width: 480px) {
+        h1 { font-size: 1.85rem; }
+        .tagline { font-size: 1.05rem; }
+        .logo-container { width: 180px; height: 180px; }
+    }
+</style>
+</head>
+<body>
+    <main>
+        <div class="logo-container" id="logo-container">
+            <svg class="logo" viewBox="0 0 80 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ifupdown logo">
+                <polygon points="48,0 72,32 24,32" fill="var(--orange)" opacity="0.92"/>
+                <polygon points="32,64 8,32 56,32" fill="var(--orange)" opacity="0.5"/>
+            </svg>
+        </div>
+        <h1>ifupdown</h1>
+        <p class="tagline">Curiosity pointed in every direction.</p>
+        <p class="tagline-sub">A passion for learning, a desire to get ahead early,<br>and the yearning to improve the everyday.</p>
+        <div class="divider"></div>
+        <p class="links">
+            <a href="https://ryanrampersad.com">ryan rampersad</a>
+            <span class="sep">&middot;</span>
+            <a href="https://github.com/ryanmr/ifupdown.com">source</a>
+        </p>
+    </main>
+    <footer>&copy; <span id="year"></span> <a href="https://ifupdown.com">ifupdown</a></footer>
+
+    <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // p5-style particle canvas around the logo
+    (function () {
+        var container = document.getElementById("logo-container");
+        var canvas = document.createElement("canvas");
+        var dpr = window.devicePixelRatio || 1;
+        var size = 240;
+        canvas.width = size * dpr;
+        canvas.height = size * dpr;
+        canvas.style.width = size + "px";
+        canvas.style.height = size + "px";
+        container.insertBefore(canvas, container.firstChild);
+
+        var ctx = canvas.getContext("2d");
+        ctx.scale(dpr, dpr);
+
+        var cx = size / 2;
+        var cy = size / 2;
+        var particles = [];
+        var count = 28;
+
+        // detect dark mode
+        function isDark() {
+            return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        }
+
+        function accentColor(alpha) {
+            if (isDark()) {
+                return "rgba(240, 144, 74, " + alpha + ")";
+            }
+            return "rgba(224, 112, 48, " + alpha + ")";
+        }
+
+        for (var i = 0; i < count; i++) {
+            var angle = Math.random() * Math.PI * 2;
+            var dist = 42 + Math.random() * 58;
+            particles.push({
+                x: cx + Math.cos(angle) * dist,
+                y: cy + Math.sin(angle) * dist,
+                r: 1.2 + Math.random() * 2,
+                angle: angle,
+                dist: dist,
+                speed: 0.002 + Math.random() * 0.004,
+                drift: (Math.random() - 0.5) * 0.15,
+                alpha: 0.15 + Math.random() * 0.35
+            });
+        }
+
+        var hovering = false;
+        container.addEventListener("mouseenter", function () { hovering = true; });
+        container.addEventListener("mouseleave", function () { hovering = false; });
+
+        function draw() {
+            ctx.clearRect(0, 0, size, size);
+
+            for (var i = 0; i < particles.length; i++) {
+                var p = particles[i];
+                var speedMul = hovering ? 2.5 : 1;
+                p.angle += p.speed * speedMul;
+                p.dist += p.drift;
+
+                // keep particles in orbit range
+                if (p.dist < 38) p.drift = Math.abs(p.drift);
+                if (p.dist > 105) p.drift = -Math.abs(p.drift);
+
+                p.x = cx + Math.cos(p.angle) * p.dist;
+                p.y = cy + Math.sin(p.angle) * p.dist;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = accentColor(p.alpha);
+                ctx.fill();
+            }
+
+            // draw faint connecting lines between nearby particles
+            for (var i = 0; i < particles.length; i++) {
+                for (var j = i + 1; j < particles.length; j++) {
+                    var dx = particles[i].x - particles[j].x;
+                    var dy = particles[i].y - particles[j].y;
+                    var d = Math.sqrt(dx * dx + dy * dy);
+                    if (d < 45) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        var lineAlpha = (1 - d / 45) * 0.12;
+                        ctx.strokeStyle = accentColor(lineAlpha);
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            requestAnimationFrame(draw);
+        }
+
+        // respect reduced motion
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            draw(); // single frame
+        } else {
+            requestAnimationFrame(draw);
+        }
+    })();
+    </script>
+</body>
+</html>
