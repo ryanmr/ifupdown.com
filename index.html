@@ -214,18 +214,20 @@
         var container = document.getElementById("logo-container");
         var canvas = document.createElement("canvas");
         var dpr = window.devicePixelRatio || 1;
-        var size = 240;
-        canvas.width = size * dpr;
-        canvas.height = size * dpr;
-        canvas.style.width = size + "px";
-        canvas.style.height = size + "px";
         container.insertBefore(canvas, container.firstChild);
 
-        var ctx = canvas.getContext("2d");
-        ctx.scale(dpr, dpr);
-
-        var cx = size / 2;
-        var cy = size / 2;
+        var size, cx, cy, ctx;
+        function resize() {
+            size = container.offsetWidth;
+            canvas.width = size * dpr;
+            canvas.height = size * dpr;
+            cx = size / 2;
+            cy = size / 2;
+            ctx = canvas.getContext("2d");
+            ctx.scale(dpr, dpr);
+        }
+        resize();
+        window.addEventListener("resize", resize);
         var particles = [];
         var count = 28;
 
